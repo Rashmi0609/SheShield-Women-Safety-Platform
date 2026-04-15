@@ -1,27 +1,19 @@
 const express = require("express");
 const router = express.Router();
 
-// SOS Route
-router.post("/emergencyPressed", async (req, res) => {
-  try {
-    const { userId, lat, long } = req.body;
+const {
+  sendemergencyCntrl,
+  getAllEmergencies,
+  getSinglEmergency,
+  emergencyUpdate,
+} = require("../controllers/emergencyCntrl");
 
-    console.log("SOS Received:");
-    console.log("User:", userId);
-    console.log("Latitude:", lat);
-    console.log("Longitude:", long);
+// 🚨 SOS ROUTE
+router.post("/emergencyPressed", sendemergencyCntrl);
 
-    res.status(200).json({
-      success: true,
-      message: "Emergency sent successfully",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-});
+// Admin
+router.get("/", getAllEmergencies);
+router.get("/:id", getSinglEmergency);
+router.put("/:id", emergencyUpdate);
 
 module.exports = router;

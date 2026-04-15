@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
-
+import ContactsList from "./pages/ContactsList";
 import NotFound from "./Components/Errors/404";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
@@ -15,6 +15,8 @@ import CloseFile from "./pages/CloseFile";
 import AboutUs2 from "./pages/AboutUs2";
 import ContactUs from "./Components/ContactUs";
 import ChatScreen from "./pages/ChatScreen";
+import AddContact from "./pages/AddContact";
+
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
         <Route path="/incident" element={<Incident />} />
         <Route path="/closedreport" element={<CloseFile />} />
         <Route path="/chat" element={<ChatScreen />} />
+        <Route path="/add-contact" element={<AddContact />} />
+        <Route path="/contacts" element={<ContactsList />} />
       </Routes>
     </Router>
   );

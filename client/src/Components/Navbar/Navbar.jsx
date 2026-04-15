@@ -31,53 +31,72 @@ const Navbar = () => {
     <header className='header_wrapper'>
       <nav className="navbar navbar-expand-lg fixed-top">
         <div className="container-fluid mx-3">
+
           {/* LOGO */}
           <Link to='/'>
             <img src={logo} alt="Logo" style={{ width: '130px' }} />
           </Link>
 
-          {/* TOGGLER BUTTON */}
+          {/* TOGGLER */}
           <button
             className="navbar-toggler pe-0"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
           >
             <BiMenuAltRight size={35} />
           </button>
 
           <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
-            {/* LEFT LINKS */}
+
+            {/* LEFT MENU */}
             <ul className="navbar-nav menu-navbar-nav">
               <li className="nav-item">
                 <Link to='/' className="nav-link">Home</Link>
               </li>
+
               <li className="nav-item">
                 <Link to='/about' className="nav-link">About Us</Link>
               </li>
+
               <li className="nav-item">
                 <Link to='/contact' className="nav-link">Contact Us</Link>
               </li>
+
               <li className="nav-item">
                 <Link to='/report' className="nav-link">Report Incident</Link>
               </li>
+
               <li className="nav-item">
-                <Link to='/emergency' className="nav-link learn-more-btn-logout">Emergency</Link>
+                <Link to='/emergency' className="nav-link learn-more-btn-logout">
+                  Emergency
+                </Link>
               </li>
+
+              {/* ✅ ADD CONTACT (ONLY WHEN LOGGED IN) */}
+              {auth?.user && (
+                <li className="nav-item">
+                  <Link to='/add-contact' className="nav-link">
+                    Add Contact
+                  </Link>
+                </li>
+              )}
             </ul>
 
-            {/* RIGHT AUTH BUTTONS */}
+            {/* RIGHT SIDE */}
             <ul className="navbar-nav">
               {!auth?.user ? (
                 <>
                   <li className="nav-item">
-                    <Link to='/login' className="nav-link learn-more-btn btn-extra-header">Login</Link>
+                    <Link to='/login' className="nav-link learn-more-btn btn-extra-header">
+                      Login
+                    </Link>
                   </li>
+
                   <li className="nav-item">
-                    <Link to='/register' className="nav-link learn-more-btn">Register</Link>
+                    <Link to='/register' className="nav-link learn-more-btn">
+                      Register
+                    </Link>
                   </li>
                 </>
               ) : (
@@ -90,6 +109,7 @@ const Navbar = () => {
                       {auth?.user?.role === 1 ? 'Dashboard' : 'Profile'}
                     </Link>
                   </li>
+
                   <li className="nav-item">
                     <span
                       onClick={handleLogout}
@@ -102,6 +122,7 @@ const Navbar = () => {
                 </>
               )}
             </ul>
+
           </div>
         </div>
       </nav>

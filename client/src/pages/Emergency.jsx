@@ -10,50 +10,10 @@ import { toast } from "react-hot-toast";
 const Emergency = () => {
   const [long, setLong] = useState("");
   const [lat, setLat] = useState("");
+  const [loading, setLoading] = useState(false);
   const [auth] = useAuth();
 
-  const handleSubmit = async () => {
-    try {
-      if (!auth?.user?._id) {
-        toast.error("Please login first");
-        return;
-      }
-
-      if (!lat || !long) {
-        toast.error("Location not loaded");
-        return;
-      }
-
-      const payload = {
-        userId: auth?.user?._id,
-        lat: lat,
-        long: long,
-      };
-
-      const res = await fetch(
-        "http://localhost:8000/api/v1/emergency/emergencyPressed",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const data = await res.json();
-
-      if (res.status === 200) {
-        toast.success("SOS SENT SUCCESSFULLY");
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
-    }
-  };
-
+  // 📍 Get Location
   const showPosition = (position) => {
     setLat(position.coords.latitude);
     setLong(position.coords.longitude);
@@ -65,9 +25,11 @@ const Emergency = () => {
         showPosition,
         (error) => {
           console.log(error);
-          toast.error("Allow location access");
+          toast.error("⚠️ Please allow location access");
         }
       );
+    } else {
+      toast.error("Geolocation not supported");
     }
   }, []);
 
@@ -76,14 +38,63 @@ const Emergency = () => {
     window.scrollTo(0, 0);
   }, [getLocation]);
 
+  // 🚨 SOS FUNCTION
+  const handleSubmit = async () => {
+  if (loading) return; // 🚫 prevent double click
+
+  try {
+    if (!auth?.user?._id) {
+      toast.error("Please login first");
+      return;
+    }
+
+    if (!lat || !long) {
+      toast.error("Location not loaded");
+      return;
+    }
+
+    setLoading(true);
+
+    const res = await fetch(
+      "http://localhost:8000/api/v1/emergency/emergencyPressed",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: auth.user._id,
+          lat,
+          long,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (res.status === 200) {
+      toast.success("🚨 SOS SENT");
+    } else {
+      toast.error(data.message);
+    }
+  } catch (err) {
+    console.log(err);
+    toast.error("Error sending SOS");
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <>
       <Navbar />
+
       <div className="heightRes">
         <section className="banner_wrapper">
           <div className="container">
             <div className="row align-items-center">
               <div className="col-md-12 text-center">
+                
                 <p className="banner-subtitle">
                   SheShield – Your Safety Our Priority
                 </p>
@@ -92,9 +103,18 @@ const Emergency = () => {
                   Help us bring <span>Women Safety</span> to Reality
                 </h1>
 
-                <button className="button-30" onClick={handleSubmit}>
-                  <PiShieldCheckBold size={180} color="red" />
+                {/* 🔥 SOS BUTTON */}
+                <button
+                  className="button-30"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                >
+                  <PiShieldCheckBold size={150} color="red" />
                 </button>
+
+                {/* 🔄 STATUS TEXT */}
+                {loading && <p style={{ marginTop: "10px" }}>Sending SOS...</p>}
+                {!lat && <p>📍 Fetching your location...</p>}
 
               </div>
             </div>
